@@ -1,0 +1,31 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environments
+*.env
+
+# Visual studio Code
+.vscode/
+
+# Do not track test folder
+_test/
+
+# mlflow
+mlruns/
+
+# init JSON
+guane*
+guaneenergy*
+
+#reports
+lreport/
+energykey.json
+bash_hyperopt.sh
