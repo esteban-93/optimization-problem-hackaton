@@ -9,13 +9,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns; sns.set()
 
 # Put the absolute path here
-path = "/home/helmholtz/Desktop/"
+path = "/home/juanes/Documentos/PythonCodes/optimizacion/optimization-problem-hackaton/files"
 file = "x_test_set_1st_datathon.csv"
 data = pd.read_csv(os.path.join(path, file))
 betas = pd.read_csv(path + "betasUpdated.csv")
 
 # test
-# data_test = data.iloc[100001:, :].copy()
 data_test = data.copy()
 data_test["Cubic Feet"] = data_test["Cubic Feet"]
 # data_test.reset_index(drop=True, inplace=True)
@@ -161,10 +160,8 @@ for i in range(data_test_model.shape[0]):
     # Check if there is an infeasible cnstraint
     log_infeasible_constraints(m)
 
-# cols = ["HU Count", "Length", "Width", "Height"]
-# Processing results
-# volumen = list(np.array(height_for)*np.array(width_for)*np.array(length_for)*np.array(N_for))
 
+# Processing results
 volumen = list(np.array(height_for)*np.array(width_for)*np.array(length_for)*np.array(N_for))
 
 dimentions = pd.DataFrame()
@@ -181,29 +178,5 @@ dimentions["Volumen"] = volumen
 # Saving the results
 dimentions.to_csv("results_inchesVol.csv", index=False)
 print(dimentions)
-
-# dimentions = pd.concat([dimentions, data_test[["Height", "Width", "Length", "HU Count"]].\
-#     reset_index(drop=True)], axis=1)
-
-# dimentions["mapeH"] = dimentions[["Height-for", "Height"]].\
-#     apply(lambda x: abs(x[0]/x[1] - 1)*100/dimentions.shape[0], axis=1)
-# dimentions["mapeW"] = dimentions[["Width-for", "Width"]].\
-#     apply(lambda x: abs(x[0]/x[1] - 1)*100/dimentions.shape[0], axis=1)
-# dimentions["mapeD"] = dimentions[["Length-for", "Length"]].\
-#     apply(lambda x: abs(x[0]/x[1] - 1)*100/dimentions.shape[0], axis=1)
-# dimentions["mapeN"] = dimentions[["HU-for", "HU Count"]].\
-#     apply(lambda x: abs(x[0]/x[1] - 1)*100/dimentions.shape[0], axis=1)
-
-# print(dimentions)
-
-# mapeW = dimentions["mapeW"].sum()
-# mapeH = dimentions["mapeH"].sum()
-# mapeD = dimentions["mapeD"].sum()
-# mapeN = dimentions["mapeN"].sum()
-
-# print(f"EL mape de width es: {mapeW}%")
-# print(f"EL mape de height es: {mapeH}%")
-# print(f"EL mape de depth es: {mapeD}%")
-# print(f"EL mape de N es: {mapeN}%")
 
 

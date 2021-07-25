@@ -6,7 +6,7 @@ from pyomo.opt import SolverStatus,TerminationCondition
 import matplotlib.pyplot as plt
 import seaborn as sns; sns.set()
 
-ROWS_TO_TRAIN = 100000
+ROWS_TO_TRAIN = 100
 FACTOR = 0.001
 INCHES_TO_FEETS = 12
 WIDTHMAX = 96/12
@@ -16,13 +16,15 @@ M = 1/5
 PENALTY_FACTOR = 10
 
 # Put the absolute path where the file is
-path = "/home/helmholtz/Desktop"
+path = "/home/juanes/Documentos/PythonCodes/optimizacion/optimization-problem-hackaton/files"
 file = "report1614289776153_random.xlsx"
 data = pd.read_excel(os.path.join(path, file))
 
 data_train = data.iloc[:ROWS_TO_TRAIN, :].copy()
 data_train[["Width", "Height", "Length"]] = data_train[["Width", "Height", "Length"]]/INCHES_TO_FEETS
+print(data_train.head())
 
+# create the training dataset
 data_train_to_model = data_train[["Weight", "Cubic Feet"]].copy()
 data_train_to_model["Weight"] = data_train_to_model["Weight"]*FACTOR
 data_train_to_model["ind"] = 1
@@ -35,9 +37,10 @@ data_train_to_model["m*v"] = data_train_to_model[["Weight", "Cubic Feet"]].\
     apply(lambda x: x[0]*x[1], axis=1)
 data_train_to_model["(m*v)^2"] = data_train_to_model["m*v"]**2
 
+# Create the Pyomo model to create the optimization problem.
 m = pyo.ConcreteModel()
 
-# set
+# sets
 m.samples = pyo.Set(initialize=list(range(data_train_to_model.shape[0])),
     doc="number of instances")
 m.features = pyo.Set(initialize=data_train_to_model.columns.values.tolist(), 
@@ -150,7 +153,7 @@ def constraint_13(m, j):
     return (m.betaN[j] + m.betaD[j] + m.betaW[j] + m.betaH[j]) == e[j]
 m.vol = pyo.Constraint(m.features, rule=constraint_13)
 
-
+# solve the model using the ipopt solver
 opt = pyo.SolverFactory("ipopt")
 results = opt.solve(m)
 
@@ -178,6 +181,8 @@ df["betaH"] = [m.betaH.get_values()[key] for key in m.betaH.get_values()]
 df["betaN"] = [m.betaN.get_values()[key] for key in m.betaN.get_values()]
 df["betaD"] = [m.betaD.get_values()[key] for key in m.betaD.get_values()]
 df["betaW"] = [m.betaW.get_values()[key] for key in m.betaW.get_values()]
+
+# Save the linear model coeficients
 df.to_csv("betasUpdated.csv", index=False)
 
 widths = {key: np.exp(m.w.get_values()[key]) for key in m.w.get_values()}
